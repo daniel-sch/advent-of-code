@@ -2,8 +2,8 @@ import re
 
 NUMBERS = ["_", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_", "one", "two", "three", "four", "five", "six", "seven",
            "eight", "nine"]
-FIRST_NUMBER_REGEX = re.compile("(" + "|".join(NUMBERS) + ")")
-LAST_NUMBER_REGEX = re.compile("(?s:.*)(" + "|".join(NUMBERS) + ")")
+FIRST_NUMBER_REGEX = re.compile(f"({'|'.join(NUMBERS)})")
+LAST_NUMBER_REGEX = re.compile(f"(?s:.*)({'|'.join(NUMBERS)})")
 
 
 def run(filename):
