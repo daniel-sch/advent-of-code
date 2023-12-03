@@ -6,10 +6,9 @@ FIRST_NUMBER_REGEX = re.compile(f"({'|'.join(NUMBERS)})")
 LAST_NUMBER_REGEX = re.compile(f"(?s:.*)({'|'.join(NUMBERS)})")
 
 
-def run(filename):
-    f = open(filename, "r")
+def run(file):
     result = 0
-    while line := f.readline():
+    while line := file.readline():
         first_number = FIRST_NUMBER_REGEX.search(line).group(1)
         last_number = LAST_NUMBER_REGEX.search(line).group(1)
         result += NUMBERS.index(first_number) % 10 * 10 + NUMBERS.index(last_number) % 10
@@ -17,4 +16,5 @@ def run(filename):
 
 
 if __name__ == "__main__":
-    print(run("../input.txt"))
+    with open("../input.txt", 'r') as f:
+        print(run(f))

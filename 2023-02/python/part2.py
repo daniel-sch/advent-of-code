@@ -12,4 +12,5 @@ def fewest_cubes_prod(game_string):
 
 
 if __name__ == "__main__":
-    print(sum((fewest_cubes_prod(line) for line in open("../input.txt", "r").readlines())))
+    with open("../input.txt", 'r') as f:
+        print(sum((fewest_cubes_prod(line) for line in f.readlines())))

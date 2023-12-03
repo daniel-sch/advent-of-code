@@ -1,6 +1,5 @@
-def run(filename):
-    f = open(filename, "r")
-    line = f.readline()
+def run(file):
+    line = file.readline()
     floor = 0
     for pos, char in enumerate(line, 1):
         floor += 1 if char == "(" else -1
@@ -9,4 +8,5 @@ def run(filename):
 
 
 if __name__ == "__main__":
-    print(run("../input.txt"))
+    with open("../input.txt", 'r') as f:
+        print(run(f))

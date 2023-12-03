@@ -9,4 +9,5 @@ def is_game_possible(game_string):
 
 
 if __name__ == "__main__":
-    print(sum((i for i, line in enumerate(open("../input.txt", "r").readlines(), 1) if is_game_possible(line))))
+    with open("../input.txt", 'r') as f:
+        print(sum((i for i, line in enumerate(f.readlines(), 1) if is_game_possible(line))))
