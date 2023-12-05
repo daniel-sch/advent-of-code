@@ -17,15 +17,11 @@ fn adjacent_numbers(lines: &Vec<&str>, line_idx: usize, col_idx: usize) -> Vec<i
         .map(|line| {
             NUMBER_REGEX
                 .captures_iter(line)
-                .filter_map(|c| {
-                    let m = c.get(0).unwrap();
-                    if m.range().start as i32 - 1 <= col_idx as i32 && col_idx < m.range().end + 1 {
-                        Some(m.as_str().parse::<i32>().unwrap())
-                    } else {
-                        None
-                    }
+                .map(|c| c.get(0).unwrap())
+                .filter(|m| {
+                    m.range().start as i32 - 1 <= col_idx as i32 && col_idx < m.range().end + 1
                 })
-                .collect::<Vec<i32>>()
+                .map(|m| m.as_str().parse::<i32>().unwrap())
         })
         .flatten()
         .collect()
@@ -40,15 +36,12 @@ fn run(filename: &str) -> i32 {
         .map(|(line_idx, line)| {
             STAR_REGEX
                 .captures_iter(line)
-                .filter_map(|c| {
+                .map(|c| {
                     let m = c.get(0).unwrap();
-                    let numbers = adjacent_numbers(&lines, line_idx, m.range().start);
-                    if numbers.len() == 2 {
-                        Some(numbers[0] * numbers[1])
-                    } else {
-                        None
-                    }
+                    adjacent_numbers(&lines, line_idx, m.range().start)
                 })
+                .filter(|numbers| numbers.len() == 2)
+                .map(|numbers| numbers[0] * numbers[1])
                 .sum::<i32>()
         })
         .sum()

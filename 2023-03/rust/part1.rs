@@ -29,13 +29,9 @@ fn run(filename: &str) -> i32 {
         .map(|(idx, line)| {
             NUMBER_REGEX
                 .captures_iter(line)
-                .filter_map(|c| {
-                    let m = c.get(0).unwrap();
-                    match is_symbol_adjacent(&lines, idx, m.range()) {
-                        true => Some(m.as_str().parse::<i32>().unwrap()),
-                        false => None,
-                    }
-                })
+                .map(|c| c.get(0).unwrap())
+                .filter(|m| is_symbol_adjacent(&lines, idx, m.range()))
+                .map(|m| m.as_str().parse::<i32>().unwrap())
                 .sum::<i32>()
         })
         .sum()
