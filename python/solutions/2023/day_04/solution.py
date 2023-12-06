@@ -5,6 +5,7 @@
 import re
 
 from ...base import StrSplitSolution, answer
+from ...utils.relaxed import RelaxList
 
 
 class Solution(StrSplitSolution):
@@ -13,32 +14,17 @@ class Solution(StrSplitSolution):
 
     LINE_REGEX = re.compile(r".*: (.*) \| (.*)")
 
-    @answer(20667)
-    def part_1(self) -> int:
-        result = 0
-        for line in self.input:
+    @answer((20667, 5833065))
+    def solve(self) -> tuple[int, int]:
+        total1 = 0
+        card_count = RelaxList([1] * len(self.input))
+        for i, line in enumerate(self.input):
             m = self.LINE_REGEX.match(line)
             winning_numbers = {int(x) for x in m.group(1).split()}
             own_numbers = {int(x) for x in m.group(2).split()}
-            intersect = len(winning_numbers & own_numbers)
-            if intersect:
-                result += 2 ** (intersect - 1)
-        return result
-
-    @answer(5833065)
-    def part_2(self) -> int:
-        card_wins = []
-        for line in self.input:
-            m = self.LINE_REGEX.match(line)
-            winning_numbers = {int(x) for x in m.group(1).split()}
-            own_numbers = {int(x) for x in m.group(2).split()}
-            card_wins.append(len(winning_numbers & own_numbers))
-        card_count = [1] * len(card_wins)
-        for i, card_win in enumerate(card_wins):
-            for j in range(min(i + 1, len(card_wins)), min(card_win + i, len(card_wins)) + 1):
-                card_count[j] += card_count[i]
-        return sum(card_count)
-
-    # @answer((1234, 4567))
-    # def solve(self) -> tuple[int, int]:
-    #     pass
+            card_win = len(winning_numbers & own_numbers)
+            if card_win:
+                total1 += 2 ** (card_win - 1)
+            for j in range(card_win):
+                card_count[i + j + 1] += card_count[i]
+        return total1, sum(card_count)

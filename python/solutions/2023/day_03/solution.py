@@ -5,6 +5,7 @@
 import re
 
 from ...base import StrSplitSolution, answer
+from ...utils.relaxed import RelaxList, RelaxString
 
 
 class Solution(StrSplitSolution):
@@ -16,33 +17,26 @@ class Solution(StrSplitSolution):
     STAR_REGEX = re.compile(r"\*")
 
     @classmethod
-    def get_range(cls, vec, imin, imax, inclusive=False):
-        return vec[max(0, imin): min(len(vec) - 1, imax) + 1 if inclusive else min(len(vec), imax)]
+    def is_symbol_adjacent(cls, lines, line_idx, span):
+        return any(
+            map(lambda line: cls.SYMBOL_REGEX.search(line[span[0] - 1:span[1] + 1]), lines[line_idx - 1:line_idx + 2]))
 
-    def is_symbol_adjacent(self, line_idx, span):
-        return any(map(lambda line: self.SYMBOL_REGEX.search(self.get_range(line, span[0] - 1, span[1] + 1)),
-                       self.get_range(self.input, line_idx - 1, line_idx + 1, inclusive=True)))
-
-    def adjacent_numbers(self, line_idx, col_idx):
+    @classmethod
+    def adjacent_numbers(cls, lines, line_idx, col_idx):
         return sum(
-            ([int(c.group()) for c in self.NUMBER_REGEX.finditer(line) if c.start() - 1 <= col_idx < c.end() + 1]
-             for line in self.get_range(self.input, line_idx - 1, line_idx + 1, inclusive=True)), [])
+            ([int(c.group()) for c in cls.NUMBER_REGEX.finditer(line) if c.start() - 1 <= col_idx < c.end() + 1]
+             for line in lines[line_idx - 1:line_idx + 2]), [])
 
-    @answer(539433)
-    def part_1(self) -> int:
-        result = 0
-        for i, line in enumerate(self.input):
-            for c in self.NUMBER_REGEX.finditer(line):
-                if self.is_symbol_adjacent(i, c.span()):
-                    result += int(c.group())
-        return result
-
-    @answer(75847567)
-    def part_2(self) -> int:
-        result = 0
-        for i, line in enumerate(self.input):
+    @answer((539433, 75847567))
+    def solve(self) -> tuple[int, int]:
+        lines = RelaxList((RelaxString(x) for x in self.input))
+        total1, total2 = 0, 0
+        for i, line in enumerate(lines):
             for c in self.STAR_REGEX.finditer(line):
-                numbers = self.adjacent_numbers(i, c.start())
+                numbers = self.adjacent_numbers(lines, i, c.start())
                 if len(numbers) == 2:
-                    result += numbers[0] * numbers[1]
-        return result
+                    total2 += numbers[0] * numbers[1]
+            for c in self.NUMBER_REGEX.finditer(line):
+                if self.is_symbol_adjacent(lines, i, c.span()):
+                    total1 += int(c.group())
+        return total1, total2
