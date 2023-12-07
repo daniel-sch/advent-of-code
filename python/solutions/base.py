@@ -165,20 +165,14 @@ class BaseSolution(Generic[I]):
             ) from exc
 
     @final
-    def debug(self, *objects, trailing_newline=False):
+    def debug(self, message):
         """
         helpful debugging utility. Does nothing if `./advent` isn't passed the --debug flag
 
-        Takes any number of objects and pretty-prints them. Can add a trailing newline to create separation between blocks
+        Prints the given message
         """
-        if not self.is_debugging:
-            return
-
-        for o in objects:
-            pprint(o)
-
-        if trailing_newline:
-            print()
+        if self.is_debugging:
+            print(message)
 
 
 class TextSolution(BaseSolution[str]):
