@@ -5,7 +5,7 @@
 import re
 
 from ...base import StrSplitSolution, answer
-from ...utils.relaxed import RelaxList, RelaxString
+from ...utils.relaxed import relaxed_str_list
 
 
 class Solution(StrSplitSolution):
@@ -29,7 +29,7 @@ class Solution(StrSplitSolution):
 
     @answer((539433, 75847567))
     def solve(self) -> tuple[int, int]:
-        lines = RelaxList((RelaxString(x) for x in self.input))
+        lines = relaxed_str_list(self.input)
         total1, total2 = 0, 0
         for i, line in enumerate(lines):
             for c in self.STAR_REGEX.finditer(line):

@@ -1,4 +1,10 @@
 class RelaxList(list):
+    """List class that returns a given default value for out-of-bounds reads and discards out-of-bounds writes."""
+
+    def __init__(self, items, default_value=None):
+        super().__init__(items)
+        self.default_value = default_value
+
     def __getitem__(self, item):
         if isinstance(item, slice):
             start = max(0, min(item.start, len(self)))
@@ -9,7 +15,7 @@ class RelaxList(list):
             if 0 <= item < len(self):
                 return super().__getitem__(item)
             else:
-                return None
+                return self.default_value
 
     def __setitem__(self, key, value):
         assert isinstance(key, int), "Slice is not supported for now"
@@ -18,6 +24,8 @@ class RelaxList(list):
 
 
 class RelaxString(str):
+    """String class that returns None for out-of-bounds reads."""
+
     def __getitem__(self, item):
         if isinstance(item, slice):
             start = max(0, min(item.start, len(self)))
@@ -29,3 +37,7 @@ class RelaxString(str):
                 return super().__getitem__(item)
             else:
                 return None
+
+
+def relaxed_str_list(str_list):
+    return RelaxList((RelaxString(x) for x in str_list), RelaxString(""))
