@@ -6,6 +6,7 @@ import re
 
 from ...base import StrSplitSolution, answer
 from ...utils.relaxed import relaxed_str_list
+from ...utils.misc import index_iter
 
 
 class Solution(StrSplitSolution):
@@ -14,7 +15,6 @@ class Solution(StrSplitSolution):
 
     NUMBER_REGEX = re.compile(r"(\d+)")
     SYMBOL_REGEX = re.compile(r"[^\d\.\s]")
-    STAR_REGEX = re.compile(r"\*")
 
     @classmethod
     def is_symbol_adjacent(cls, lines, line_idx, span):
@@ -32,8 +32,8 @@ class Solution(StrSplitSolution):
         lines = relaxed_str_list(self.input)
         total1, total2 = 0, 0
         for i, line in enumerate(lines):
-            for c in self.STAR_REGEX.finditer(line):
-                numbers = self.adjacent_numbers(lines, i, c.start())
+            for c in index_iter(line, '*'):
+                numbers = self.adjacent_numbers(lines, i, c)
                 if len(numbers) == 2:
                     total2 += numbers[0] * numbers[1]
             for c in self.NUMBER_REGEX.finditer(line):
